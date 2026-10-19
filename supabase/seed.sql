@@ -99,5 +99,24 @@ cross join (values
 join public.products p on p.slug = v.slug
 left join public.products r on r.slug = v.replacement_slug;
 
+-- Compte admin de test, en LOCAL uniquement (le seed n'est jamais envoyé en ligne) :
+-- admin@blackhouse.test / blackhouse-local  →  http://localhost:3000/admin
+insert into auth.users (
+  instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
+  raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, email_change, email_change_token_new, recovery_token
+) values (
+  '00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000001', 'authenticated', 'authenticated',
+  'admin@blackhouse.test', extensions.crypt('blackhouse-local', extensions.gen_salt('bf')), now(),
+  '{"provider": "email", "providers": ["email"]}', '{}', now(), now(), '', '', '', ''
+);
+insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+values (
+  gen_random_uuid(), 'a0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000001',
+  '{"sub": "a0000000-0000-4000-8000-000000000001", "email": "admin@blackhouse.test", "email_verified": true}',
+  'email', now(), now(), now()
+);
+insert into public.admins (user_id) values ('a0000000-0000-4000-8000-000000000001');
+
 -- Les numéros des commandes de test sont fixés à la main : la prochaine sera BH-1043.
 select setval('public.order_number_seq', 1042);

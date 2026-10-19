@@ -37,6 +37,10 @@ ensuite l'URL de l'API et les clés.
    - Site : http://localhost:3000
    - Supabase Studio (tables, comptes, photos) : http://127.0.0.1:54323
 
+## Back-office
+
+`/admin`. En local, le seed crée un compte de test : `admin@blackhouse.test` / `blackhouse-local`.
+
 ## Créer le compte de Babacar
 
 Les inscriptions sont fermées : le compte du back-office se crée à la main.
@@ -88,7 +92,7 @@ Photos : seau public `product-images` (lecture par URL, dépôt réservé aux ad
 2. ✅ Catalogue, catégories, recherche et fiche produit (mobile, tablette, ordinateur)
 3. ✅ Panier, envoi de la commande, confirmation
 4. ✅ Page de suivi et choix du client si un article manque (test : `/suivi/acacacacacacacacacacacacacacacacacac` après `npm run db:reset`)
-5. Back-office : commandes, vérification, messages WhatsApp
+5. ✅ Back-office des commandes : connexion, vérification, remplacements, messages WhatsApp (`/admin`)
 6. Back-office : produits et stock, photos, notifications
 7. Mise en ligne, tests sur téléphones, saisie du catalogue
 
