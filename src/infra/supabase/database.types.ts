@@ -191,7 +191,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "create_order":
+            "apply_customer_choice":
+{ Args: { "p_choice": Database["public"]['Enums']["customer_choice"],"p_tracking_token": string }; Returns: Database["public"]['Enums']["order_status"]
+                           },
+"create_order":
 { Args: { "p_address_details": string,"p_commune": string,"p_customer_name": string,"p_customer_phone": string,"p_items": Json,"p_payment_method": Database["public"]['Enums']["payment_method"] }; Returns: Json
                            },
 "is_admin":

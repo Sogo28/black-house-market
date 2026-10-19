@@ -77,11 +77,18 @@ async function ThankYou({ params }: PageProps<"/merci/[token]">) {
       </section>
 
       <Link
+        href={`/suivi/${token}`}
+        className="mt-6 flex h-13 items-center justify-center rounded-lg bg-ink font-semibold text-white"
+      >
+        Suivre ma commande
+      </Link>
+      <Link
         href="/"
-        className="mt-6 flex h-13 items-center justify-center rounded-lg border-[1.5px] border-ink font-semibold"
+        className="mt-3 flex h-13 items-center justify-center rounded-lg border-[1.5px] border-ink font-semibold"
       >
         Continuer mes achats
       </Link>
+      <p className="mt-3 text-center text-sm text-muted">Gardez ce lien : il vous permet de suivre votre commande.</p>
     </>
   );
 }

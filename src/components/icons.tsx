@@ -58,6 +58,12 @@ export const CheckCircleIcon = (p: IconProps) => (
   </Svg>
 );
 
+export const CheckIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M6 12.5l4 4 8-9" />
+  </Svg>
+);
+
 export const ChevronRightIcon = (p: IconProps) => (
   <Svg {...p}>
     <path d="M9 5l7 7-7 7" />

@@ -32,6 +32,7 @@ from (values
   ('palette-fards-12-teintes', 'Palette fards à paupières – 12 teintes', 'beaute', 'Fournisseur 1 · Beauté', 8000, 13500, 'sold_out', 1),
   ('ecran-solaire-spf50-50ml', 'Écran solaire SPF 50 – 50 ml', 'beaute', 'Fournisseur 1 · Beauté', 6500, 10000, 'available', 4),
   ('whey-isolat-2kg', 'Whey protéine isolat – 2 kg', 'musculation', 'Fournisseur 2 · Sport', 32000, 48000, 'on_order', 6),
+  ('whey-proteine-2kg', 'Whey protéine – 2 kg', 'musculation', 'Fournisseur 2 · Sport', 30000, 45000, 'available', 0),
   ('kit-bandes-resistance', 'Kit bandes de résistance – 5 niveaux', 'musculation', 'Fournisseur 2 · Sport', 7000, 12000, 'available', 1),
   ('ecouteurs-reduction-bruit', 'Écouteurs sans fil à réduction de bruit', 'high-tech', 'Fournisseur 3 · High-tech', 18500, 29900, 'available', 4),
   ('montre-connectee-sport', 'Montre connectée sport', 'high-tech', 'Fournisseur 3 · High-tech', 22000, 35000, 'available', 0),
@@ -80,6 +81,23 @@ join public.orders o on o.code = v.code;
 
 insert into public.stock_alerts (product_id, phone)
 select id, '770000201' from public.products where slug = 'palette-fards-12-teintes';
+
+-- Commande en attente du choix du client : la whey est épuisée, une autre est proposée.
+-- Jeton fixe pour tester la page : http://localhost:3000/suivi/acacacacacacacacacacacacacacacacacac
+with o as (
+  insert into public.orders (code, tracking_token, customer_name, customer_phone, commune, address_details, status, created_at)
+  values ('BH-1040', 'acacacacacacacacacacacacacacacacacac', 'Mariama Ba', '770000110', 'Médina', 'Rue 22, près du marché Tilène', 'action_required', now() - interval '90 minutes')
+  returning id
+)
+insert into public.order_items (order_id, product_id, product_name, unit_price, quantity, check_status, replacement_product_id)
+select o.id, p.id, p.name, p.price, v.quantity, v.check_status::public.item_check, r.id
+from o
+cross join (values
+  ('kit-bandes-resistance', 1, 'available', null),
+  ('whey-isolat-2kg', 1, 'unavailable', 'whey-proteine-2kg')
+) as v (slug, quantity, check_status, replacement_slug)
+join public.products p on p.slug = v.slug
+left join public.products r on r.slug = v.replacement_slug;
 
 -- Les numéros des commandes de test sont fixés à la main : la prochaine sera BH-1043.
 select setval('public.order_number_seq', 1042);
