@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Couleurs de la maquette (canvas « Black House – Maquette e-commerce », planche Typographie). */
+@theme {
+  --color-ink: #111111;
+  --color-gold: #e2b13c;
+  --color-sand: #f4f1ec;
+  --color-line: #e4dfd6;
+  --color-muted: #5e5a54;
+  --color-whatsapp: #1a7f4b;
+  --color-amber: #9a6200;
+}
+
+/* Les variables --font-jost, --font-alex-brush et --font-questrial sont posées sur <html>
+   par next/font (voir src/app/layout.tsx). */
+@theme inline {
+  --font-sans: var(--font-jost), "Century Gothic", sans-serif;
+  --font-script: var(--font-alex-brush), cursive;
+  --font-tagline: var(--font-questrial), "Century Gothic", sans-serif;
+}
