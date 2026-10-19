@@ -7,6 +7,7 @@ import { sortProducts } from "@/domain/catalogue";
 import { formatFcfa } from "@/domain/money";
 import { getCatalogue, getProduct } from "@/infra/catalogue";
 import { SHOP_WHATSAPP } from "@/site";
+import { requestRestockAlert } from "./actions";
 
 const RELATED_COUNT = 4;
 
@@ -93,6 +94,7 @@ async function ProductContent({ params }: PageProps<"/produit/[slug]">) {
             price={product.price}
             status={product.status}
             shopWhatsapp={SHOP_WHATSAPP}
+            restockAction={requestRestockAlert.bind(null, product.slug)}
           />
           <ul className="divide-y divide-line border-y border-line">
             <li className="flex gap-3 py-3">

@@ -17,7 +17,7 @@ export async function SiteHeader() {
       <header className="bg-ink text-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 md:px-8">
           <Link href="/" aria-label="Black House, accueil" className="mr-auto md:mr-0">
-            <Logo width={170} />
+            <Logo width={210} />
           </Link>
           <form
             action="/recherche"
@@ -47,10 +47,11 @@ export async function SiteHeader() {
         </div>
         {categories.length > 0 && (
           <nav aria-label="Catégories" className="border-t border-white/10">
-            <ul className="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-4 md:px-8">
+            {/* w-max + max-w-full : la liste se centre quand elle tient, et défile quand elle déborde. */}
+            <ul className="mx-auto flex w-max max-w-full gap-0.5 overflow-x-auto px-2 md:gap-4 md:px-8">
               {categories.map((category) => (
                 <li key={category.slug} className="shrink-0">
-                  <Link href={`/categorie/${category.slug}`} className="block py-3 text-sm font-medium hover:text-gold">
+                  <Link href={`/categorie/${category.slug}`} className="block px-2 py-3.5 text-base font-semibold hover:text-gold md:px-3 md:text-lg">
                     {category.name}
                   </Link>
                 </li>

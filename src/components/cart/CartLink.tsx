@@ -14,7 +14,7 @@ export function CartLink() {
     >
       <BagIcon />
       {count > 0 && (
-        <span className="absolute right-0.5 top-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-gold px-1 text-[11px] font-bold text-ink">
+        <span className="absolute right-0.5 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-xs font-bold text-ink">
           {count}
         </span>
       )}

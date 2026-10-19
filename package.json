@@ -13,7 +13,8 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "db:types": "supabase gen types typescript --local --schema public > src/infra/supabase/database.types.ts"
+    "db:types": "supabase gen types typescript --local --schema public > src/infra/supabase/database.types.ts",
+    "db:seed-images": "node --env-file=.env.local scripts/seed-images.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

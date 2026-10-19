@@ -33,7 +33,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="fr"
       className={`${jost.variable} ${alexBrush.variable} ${questrial.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-white font-sans text-ink">
+      {/* suppressHydrationWarning : des extensions de navigateur (ColorZilla…) ajoutent des attributs
+          au <body> avant React ; sans ça, la console signale une fausse erreur d'hydratation.
+          Ne s'applique qu'à cet élément, pas à ses enfants. */}
+      <body suppressHydrationWarning className="flex min-h-full flex-col bg-white font-sans text-ink">
         {children}
       </body>
     </html>

@@ -18,6 +18,8 @@ export type AdminOrderRow = {
   total: number;
   checked: number;
   lines: number;
+  /** Photo principale de chaque article (null s'il n'a pas de photo ou n'existe plus). */
+  thumbs: (string | null)[];
 };
 
 export async function listOrders(supabase: AdminClient, statuses: OrderStatus[]): Promise<AdminOrderRow[]> {
@@ -25,10 +27,11 @@ export async function listOrders(supabase: AdminClient, statuses: OrderStatus[])
     .from("orders")
     .select(
       `code, customer_name, commune, status, confirm_before, created_at,
-       order_items (quantity, unit_price, check_status)`,
+       order_items (quantity, unit_price, check_status, created_at, product:products!order_items_product_id_fkey (images))`,
     )
     .in("status", statuses)
     .order("confirm_before")
+    .order("created_at", { referencedTable: "order_items" })
     .limit(50);
   if (error) throw new Error(`Lecture des commandes impossible : ${error.message}`);
 
@@ -43,6 +46,7 @@ export async function listOrders(supabase: AdminClient, statuses: OrderStatus[])
     total: order.order_items.reduce((sum, item) => sum + item.quantity * item.unit_price, 0),
     checked: order.order_items.filter((item) => item.check_status !== "pending").length,
     lines: order.order_items.length,
+    thumbs: order.order_items.map((item) => item.product?.images[0] ?? null),
   }));
 }
 

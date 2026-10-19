@@ -11,10 +11,48 @@
   --color-amber: #9a6200;
 }
 
+/* Échelle typographique de Tailwind, agrandie de 20 % (16 px → 19 px pour le texte courant).
+   Tous les niveaux montent ensemble : la hiérarchie entre titres et texte ne change pas.
+   Pour ajuster le tout d'un coup, changer --type-scale (1.2 aujourd'hui). */
+@theme {
+  --type-scale: 1.2;
+  --text-xs: calc(0.75rem * var(--type-scale));
+  --text-sm: calc(0.875rem * var(--type-scale));
+  --text-base: calc(1rem * var(--type-scale));
+  --text-lg: calc(1.125rem * var(--type-scale));
+  --text-xl: calc(1.25rem * var(--type-scale));
+  --text-2xl: calc(1.5rem * var(--type-scale));
+  --text-3xl: calc(1.875rem * var(--type-scale));
+  --text-4xl: calc(2.25rem * var(--type-scale));
+  --text-5xl: calc(3rem * var(--type-scale));
+  --text-6xl: calc(3.75rem * var(--type-scale));
+}
+
 /* Les variables --font-jost, --font-alex-brush et --font-questrial sont posées sur <html>
    par next/font (voir src/app/layout.tsx). */
 @theme inline {
   --font-sans: var(--font-jost), "Century Gothic", sans-serif;
   --font-script: var(--font-alex-brush), cursive;
   --font-tagline: var(--font-questrial), "Century Gothic", sans-serif;
+}
+
+/* Tailwind 4 ne met plus le curseur « main » sur les boutons (c'était le cas en v3) : on le rétablit
+   pour tout ce qui est cliquable, et on signale clairement ce qui est désactivé.
+   Les <label> qui entourent une case ou un bouton radio portent leur propre `cursor-pointer`. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  select:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="file"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
 }

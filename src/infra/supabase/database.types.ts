@@ -21,14 +21,14 @@ export type Database = {
                   ]
                 },"categories": {
                   Row: {
-                    "hint": string | null,"id": string,"name": string,"position": number,"slug": string
+                    "hint": string | null,"id": string,"image": string | null,"name": string,"position": number,"slug": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "hint"?: string | null,"id"?: string,"name": string,"position"?: number,"slug": string
+                    "hint"?: string | null,"id"?: string,"image"?: string | null,"name": string,"position"?: number,"slug": string
                   }
                   Update: {
-                    "hint"?: string | null,"id"?: string,"name"?: string,"position"?: number,"slug"?: string
+                    "hint"?: string | null,"id"?: string,"image"?: string | null,"name"?: string,"position"?: number,"slug"?: string
                   }
                   Relationships: [
                     

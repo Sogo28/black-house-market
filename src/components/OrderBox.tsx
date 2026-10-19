@@ -6,12 +6,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { canBeOrdered, type ProductStatus } from "@/domain/availability";
-import { backInStockMessage, productOrderMessage } from "@/domain/messages";
+import { productOrderMessage } from "@/domain/messages";
 import { formatFcfa } from "@/domain/money";
 import { MAX_QUANTITY } from "@/domain/order";
 import { whatsappLink } from "@/domain/phone";
 import { cart, useCart } from "./cart/cartStore";
 import { BagIcon, MinusIcon, PlusIcon, WhatsAppIcon } from "./icons";
+import { RestockForm } from "./RestockForm";
 
 type OrderBoxProps = {
   slug: string;
@@ -19,25 +20,15 @@ type OrderBoxProps = {
   price: number;
   status: ProductStatus;
   shopWhatsapp: string | null;
+  /** Inscription à l'alerte de retour (produit épuisé), déjà liée au produit côté serveur. */
+  restockAction: React.ComponentProps<typeof RestockForm>["action"];
 };
 
-export function OrderBox({ slug, productName, price, status, shopWhatsapp }: OrderBoxProps) {
+export function OrderBox({ slug, productName, price, status, shopWhatsapp, restockAction }: OrderBoxProps) {
   const [quantity, setQuantity] = useState(1);
   const inCart = useCart().find((line) => line.slug === slug);
 
-  if (!canBeOrdered(status)) {
-    return (
-      shopWhatsapp && (
-        <a
-          href={whatsappLink(shopWhatsapp, backInStockMessage(productName))}
-          className="flex h-13 items-center justify-center gap-2 rounded-lg bg-ink font-semibold text-white"
-        >
-          <WhatsAppIcon />
-          Être prévenu de son retour
-        </a>
-      )
-    );
-  }
+  if (!canBeOrdered(status)) return <RestockForm action={restockAction} />;
 
   return (
     <div className="flex flex-col gap-3">

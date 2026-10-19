@@ -93,6 +93,8 @@ async function OrderDetail({ params }: PageProps<"/admin/commandes/[code]">) {
         </p>
       )}
 
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start lg:gap-6">
+        <div className="flex flex-col gap-5">
       <section className="flex flex-col gap-3 rounded-xl border border-line bg-white p-4">
         <div>
           <h2 className="text-lg font-semibold">{order.customerName}</h2>
@@ -223,7 +225,8 @@ async function OrderDetail({ params }: PageProps<"/admin/commandes/[code]">) {
           );
         })}
       </section>
-
+        </div>
+        <div className="flex flex-col gap-5 lg:sticky lg:top-4">
       {action.kind === "verify" && (
         <p className="rounded-lg bg-sand px-4 py-3 text-sm">
           Vérifiez {action.remaining > 1 ? `les ${action.remaining} articles restants` : "l'article restant"} pour continuer.
@@ -288,6 +291,8 @@ async function OrderDetail({ params }: PageProps<"/admin/commandes/[code]">) {
           </form>
         </details>
       )}
+        </div>
+      </div>
     </div>
   );
 }

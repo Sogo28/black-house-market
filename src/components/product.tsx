@@ -74,7 +74,7 @@ export function ProductCard({ product }: { product: CatalogueProduct }) {
         <DiscountBadge price={product.price} oldPrice={product.oldPrice} />
       </Link>
       <span className="text-xs font-semibold uppercase tracking-wider text-muted">{product.categoryName}</span>
-      <Link href={href} className="min-h-10 font-medium leading-snug hover:underline">
+      <Link href={href} className="min-h-14 font-medium leading-snug hover:underline">
         {product.name}
       </Link>
       <PriceTag price={product.price} oldPrice={product.oldPrice} />

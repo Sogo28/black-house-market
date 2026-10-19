@@ -9,7 +9,7 @@ import { createPublicClient } from "./supabase/public";
 // `catalogue` : le back-office l'invalidera après chaque modification d'un produit.
 // Sans Supabase configuré, elles renvoient un catalogue vide (la page l'explique).
 
-export type Category = { slug: string; name: string; hint: string | null };
+export type Category = { slug: string; name: string; hint: string | null; /** Chemin dans le seau product-images (voir productImageUrl). */ image: string | null };
 
 export type CatalogueProduct = {
   id: string;
@@ -76,7 +76,7 @@ export async function getCategories(): Promise<Category[]> {
   cacheTag("catalogue");
   if (!getSupabaseEnv()) return [];
 
-  const { data, error } = await createPublicClient().from("categories").select("slug, name, hint").order("position");
+  const { data, error } = await createPublicClient().from("categories").select("slug, name, hint, image").order("position");
   if (error) throw new Error(`Lecture des catégories impossible : ${error.message}`);
   return data;
 }

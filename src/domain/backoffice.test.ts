@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { confirmationMessage, deadline, nextAction, parseAdminTab, supplierQuestion } from "./backoffice";
+import { ageLabel, confirmationMessage, deadline, nextAction, parseAdminTab, supplierQuestion } from "./backoffice";
 import type { TrackedItem } from "./tracking";
 
 const item = (overrides: Partial<TrackedItem>): TrackedItem => ({
@@ -70,5 +70,16 @@ describe("parseAdminTab", () => {
   it("revient à « À traiter » par défaut", () => {
     expect(parseAdminTab("en-livraison")).toBe("en-livraison");
     expect(parseAdminTab("inconnu")).toBe("a-traiter");
+  });
+});
+
+describe("ageLabel", () => {
+  const now = new Date("2026-10-19T12:00:00Z");
+  const ago = (minutes: number) => new Date(now.getTime() - minutes * 60000);
+  it("choisit l'unité la plus parlante", () => {
+    expect(ageLabel(ago(0), now)).toBe("à l'instant");
+    expect(ageLabel(ago(12), now)).toBe("il y a 12 min");
+    expect(ageLabel(ago(190), now)).toBe("il y a 3 h");
+    expect(ageLabel(ago(60 * 24 * 2 + 30), now)).toBe("il y a 2 j");
   });
 });

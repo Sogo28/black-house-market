@@ -37,6 +37,18 @@ ensuite l'URL de l'API et les clés.
    - Site : http://localhost:3000
    - Supabase Studio (tables, comptes, photos) : http://127.0.0.1:54323
 
+## Images de test
+
+Les produits et les catégories du seed n'ont pas d'image. Pour en avoir en local (illustrations
+générées, jamais de vraies photos), après `npm run db:reset` :
+
+```bash
+npm run db:seed-images
+```
+
+Le script refuse de tourner contre autre chose qu'un Supabase local. Le site met jusqu'à une
+minute à les afficher (cache du catalogue) ; enregistrer un produit dans le back-office le vide tout de suite.
+
 ## Back-office
 
 `/admin`. En local, le seed crée un compte de test : `admin@blackhouse.test` / `blackhouse-local`.
@@ -71,7 +83,7 @@ Schéma : `supabase/migrations/`. Données de test : `supabase/seed.sql`.
 
 | Table | Contenu | Qui la lit |
 |---|---|---|
-| `categories` | Beauté, Musculation, High-tech, Café… | Tout le monde |
+| `categories` | Beauté, Musculation, High-tech, Café… et leur image d'accueil | Tout le monde |
 | `products` | Prix, ancien prix, photos, statut saisi, date de dernière vérification, fournisseur | Admin |
 | `catalogue` (vue) | Produits publiés **sans fournisseur**, statut affiché au client | Tout le monde |
 | `suppliers` | Fournisseurs et leur WhatsApp | Admin |
@@ -93,7 +105,7 @@ Photos : seau public `product-images` (lecture par URL, dépôt réservé aux ad
 3. ✅ Panier, envoi de la commande, confirmation
 4. ✅ Page de suivi et choix du client si un article manque (test : `/suivi/acacacacacacacacacacacacacacacacacac` après `npm run db:reset`)
 5. ✅ Back-office des commandes : connexion, vérification, remplacements, messages WhatsApp (`/admin`)
-6. Back-office : produits et stock, photos, notifications
+6. ✅ Back-office des produits : stock, revérification, fiches, photos, alertes de retour (`/admin/produits`)
 7. Mise en ligne, tests sur téléphones, saisie du catalogue
 
 ## Mise en ligne (prévue à l'étape 7)

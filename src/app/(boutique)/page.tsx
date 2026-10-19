@@ -1,10 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRightIcon, CashIcon, CheckCircleIcon, TruckIcon, WhatsAppIcon } from "@/components/icons";
 import { ProductGrid } from "@/components/product";
 import { sortProducts } from "@/domain/catalogue";
 import { discountPercent } from "@/domain/money";
 import { whatsappLink } from "@/domain/phone";
-import { getCatalogue, getCategories } from "@/infra/catalogue";
+import { getCatalogue, getCategories, productImageUrl } from "@/infra/catalogue";
 import { getSupabaseEnv } from "@/infra/supabase/env";
 import { SHOP_WHATSAPP } from "@/site";
 
@@ -98,10 +99,28 @@ export default async function HomePage() {
               <li key={category.slug}>
                 <Link
                   href={`/categorie/${category.slug}`}
-                  className="flex h-36 flex-col justify-end rounded-2xl bg-sand p-4 hover:bg-line md:h-48"
+                  className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl bg-sand p-4 text-white md:aspect-square"
                 >
-                  <span className="text-lg font-semibold">{category.name}</span>
-                  {category.hint && <span className="text-sm text-muted">{category.hint}</span>}
+                  {category.image && (
+                    <Image
+                      src={productImageUrl(category.image)}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1152px) 280px, (min-width: 768px) 25vw, 50vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  )}
+                  {/* Voile sombre en bas : le titre reste lisible quelle que soit l'image. */}
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-x-0 bottom-0 h-3/5 ${category.image ? "bg-gradient-to-t from-black/75 to-transparent" : ""}`}
+                  />
+                  <span className={`relative flex flex-col ${category.image ? "" : "text-ink"}`}>
+                    <span className="text-xl font-semibold leading-tight">{category.name}</span>
+                    {category.hint && (
+                      <span className={`text-sm ${category.image ? "text-white/80" : "text-muted"}`}>{category.hint}</span>
+                    )}
+                  </span>
                 </Link>
               </li>
             ))}

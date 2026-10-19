@@ -37,6 +37,16 @@ export function deadline(confirmBefore: Date, now: Date): Deadline {
   return { label: late ? `En retard de ${duration}` : `Reste ${duration}`, late };
 }
 
+/** « à l'instant », « il y a 12 min », « il y a 3 h », « il y a 2 j ». */
+export function ageLabel(createdAt: Date, now: Date): string {
+  const minutes = Math.max(0, Math.floor((now.getTime() - createdAt.getTime()) / 60000));
+  if (minutes < 1) return "à l'instant";
+  if (minutes < 60) return `il y a ${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `il y a ${hours} h`;
+  return `il y a ${Math.floor(hours / 24)} j`;
+}
+
 export type NextAction =
   | { kind: "verify"; remaining: number } // des articles restent à vérifier
   | { kind: "ask-choice" } // un article manque : demander au client

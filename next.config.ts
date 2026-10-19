@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
     // En local, Supabase répond sur 127.0.0.1, que Next refuse par défaut. Jamais en production.
     dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",
   },
+  experimental: {
+    // Les photos sont réduites dans le navigateur (~300 Ko) ; on garde de la marge.
+    serverActions: { bodySizeLimit: "3mb" },
+  },
   turbopack: {
     rules: {
       "*.css": {
