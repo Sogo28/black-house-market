@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { AVAILABILITY_COPY, type ProductStatus } from "@/domain/availability";
+import { AVAILABILITY_COPY, canBeOrdered, type ProductStatus } from "@/domain/availability";
 import { discountPercent, formatFcfa } from "@/domain/money";
 import { productImageUrl, type CatalogueProduct } from "@/infra/catalogue";
+import { AddToCartButton } from "./cart/AddToCartButton";
 
 const STATUS_COLOR: Record<ProductStatus, { text: string; dot: string }> = {
   available: { text: "text-whatsapp", dot: "bg-whatsapp" },
@@ -78,6 +79,7 @@ export function ProductCard({ product }: { product: CatalogueProduct }) {
       </Link>
       <PriceTag price={product.price} oldPrice={product.oldPrice} />
       <AvailabilityLine status={product.status} />
+      {canBeOrdered(product.status) && <AddToCartButton slug={product.slug} />}
     </article>
   );
 }

@@ -88,6 +88,7 @@ async function ProductContent({ params }: PageProps<"/produit/[slug]">) {
           )}
           <AvailabilityBox status={product.status} />
           <OrderBox
+            slug={product.slug}
             productName={product.name}
             price={product.price}
             status={product.status}

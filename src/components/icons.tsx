@@ -91,6 +91,20 @@ export const MinusIcon = (p: IconProps) => (
   </Svg>
 );
 
+export const BagIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5.5 8h13l-1 12.5h-11L5.5 8z" />
+    <path d="M9 8V6.5a3 3 0 0 1 6 0V8" />
+  </Svg>
+);
+
+export const ClockIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </Svg>
+);
+
 export const PlusIcon = (p: IconProps) => (
   <Svg {...p}>
     <path d="M5 12h14M12 5v14" />

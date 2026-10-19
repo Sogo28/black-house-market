@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCategories } from "@/infra/catalogue";
 import { SHOP_WHATSAPP } from "@/site";
 import { whatsappLink } from "@/domain/phone";
+import { CartLink } from "./cart/CartLink";
 import { SearchIcon, WhatsAppIcon } from "./icons";
 import { Logo } from "./Logo";
 
@@ -35,12 +36,14 @@ export async function SiteHeader() {
           {SHOP_WHATSAPP && (
             <a
               href={whatsappLink(SHOP_WHATSAPP, "Bonjour Black House, j'ai une question.")}
+              aria-label="Nous écrire sur WhatsApp"
               className="flex h-11 items-center gap-2 rounded-lg px-2 text-sm font-medium hover:bg-white/10"
             >
               <WhatsAppIcon />
               <span className="hidden sm:inline">Nous écrire</span>
             </a>
           )}
+          <CartLink />
         </div>
         {categories.length > 0 && (
           <nav aria-label="Catégories" className="border-t border-white/10">

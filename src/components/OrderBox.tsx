@@ -1,26 +1,29 @@
 "use client";
 
-// Quantité et commande depuis la fiche produit. Le panier arrive à l'étape 3 ;
-// en attendant, la commande part sur WhatsApp avec un message déjà rédigé.
+// Quantité et commande depuis la fiche produit : ajout au panier, ou commande directe
+// sur WhatsApp avec un message déjà rédigé.
 
+import Link from "next/link";
 import { useState } from "react";
 import { canBeOrdered, type ProductStatus } from "@/domain/availability";
 import { backInStockMessage, productOrderMessage } from "@/domain/messages";
 import { formatFcfa } from "@/domain/money";
+import { MAX_QUANTITY } from "@/domain/order";
 import { whatsappLink } from "@/domain/phone";
-import { MinusIcon, PlusIcon, WhatsAppIcon } from "./icons";
-
-const MAX_QUANTITY = 20; // même limite que la table order_items
+import { cart, useCart } from "./cart/cartStore";
+import { BagIcon, MinusIcon, PlusIcon, WhatsAppIcon } from "./icons";
 
 type OrderBoxProps = {
+  slug: string;
   productName: string;
   price: number;
   status: ProductStatus;
   shopWhatsapp: string | null;
 };
 
-export function OrderBox({ productName, price, status, shopWhatsapp }: OrderBoxProps) {
+export function OrderBox({ slug, productName, price, status, shopWhatsapp }: OrderBoxProps) {
   const [quantity, setQuantity] = useState(1);
+  const inCart = useCart().find((line) => line.slug === slug);
 
   if (!canBeOrdered(status)) {
     return (
@@ -66,14 +69,28 @@ export function OrderBox({ productName, price, status, shopWhatsapp }: OrderBoxP
           </button>
         </div>
       </div>
-      <p className="flex justify-between text-sm text-muted">
-        <span>Total</span>
-        <span className="font-semibold text-ink">{formatFcfa(price * quantity)}</span>
-      </p>
+      <button
+        type="button"
+        onClick={() => cart.add(slug, quantity)}
+        className="flex h-13 items-center justify-center gap-2 rounded-lg bg-ink font-semibold text-white"
+      >
+        <BagIcon className="size-5" />
+        Ajouter au panier · {formatFcfa(price * quantity)}
+      </button>
+      {inCart && (
+        <p role="status" className="flex items-center justify-between rounded-lg bg-sand px-4 py-3 text-sm">
+          <span>
+            {inCart.quantity} dans votre panier
+          </span>
+          <Link href="/panier" className="font-semibold underline">
+            Voir le panier
+          </Link>
+        </p>
+      )}
       {shopWhatsapp && (
         <a
           href={whatsappLink(shopWhatsapp, productOrderMessage(productName, quantity, price))}
-          className="flex h-13 items-center justify-center gap-2 rounded-lg bg-whatsapp font-semibold text-white"
+          className="flex h-13 items-center justify-center gap-2 rounded-lg border-[1.5px] border-whatsapp font-semibold text-whatsapp"
         >
           <WhatsAppIcon />
           Commander sur WhatsApp

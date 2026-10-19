@@ -86,7 +86,7 @@ Photos : seau public `product-images` (lecture par URL, dépôt réservé aux ad
 
 1. ✅ Mise en place : projet, schéma, sécurité, données de test
 2. ✅ Catalogue, catégories, recherche et fiche produit (mobile, tablette, ordinateur)
-3. Panier, envoi de la commande, confirmation
+3. ✅ Panier, envoi de la commande, confirmation
 4. Page de suivi et choix du client si un article manque
 5. Back-office : commandes, vérification, messages WhatsApp
 6. Back-office : produits et stock, photos, notifications
