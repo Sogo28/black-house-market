@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRightIcon, CashIcon, CheckCircleIcon, TruckIcon, WhatsAppIcon } from "@/components/icons";
-import { ProductGrid } from "@/components/product";
+import { DiscountBadge, ProductGrid } from "@/components/product";
 import { sortProducts } from "@/domain/catalogue";
-import { discountPercent } from "@/domain/money";
+import { discountPercent, formatFcfa } from "@/domain/money";
 import { whatsappLink } from "@/domain/phone";
 import { getCatalogue, getCategories, productImageUrl } from "@/infra/catalogue";
 import { getSupabaseEnv } from "@/infra/supabase/env";
@@ -30,6 +30,8 @@ export default async function HomePage() {
     products.filter((p) => discountPercent(p.price, p.oldPrice) !== null),
     "remise",
   ).slice(0, OFFERS_COUNT);
+  // Pour la bannière : les offres qui ont une photo, avec la plus forte remise en premier.
+  const heroItems = offers.filter((p) => p.images.length > 0).slice(0, 4);
 
   return (
     <main>
@@ -64,10 +66,32 @@ export default async function HomePage() {
             </div>
             <span className="text-sm text-white/60">Sans création de compte · Rien à payer en ligne</span>
           </div>
-          {/* Visuel de campagne : à remplacer par une photo de Babacar. */}
-          <div className="flex aspect-[4/3] flex-[1_1_340px] items-center justify-center rounded-2xl bg-white/10 text-sm text-white/60">
-            Visuel de campagne
-          </div>
+          {/* Les meilleures offres illustrent la bannière : le visuel suit le catalogue, sans photo à fournir. */}
+          {heroItems.length >= 2 && (
+            <ul aria-label="Offres à la une" className="grid flex-[1_1_340px] grid-cols-2 gap-3 md:gap-4">
+              {heroItems.map((product, index) => (
+                <li key={product.id} className={index % 2 === 1 ? "mt-6 md:mt-10" : ""}>
+                  <Link
+                    href={`/produit/${product.slug}`}
+                    className="group relative block aspect-square overflow-hidden rounded-2xl bg-white/10"
+                  >
+                    <Image
+                      src={productImageUrl(product.images[0])}
+                      alt={product.name}
+                      fill
+                      preload={index < 2}
+                      sizes="(min-width: 1024px) 280px, 45vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <DiscountBadge price={product.price} oldPrice={product.oldPrice} />
+                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-3 pb-3 pt-10 text-sm font-semibold text-white">
+                      {formatFcfa(product.price)}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 

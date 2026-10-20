@@ -2,16 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { PlusIcon, WhatsAppIcon } from "@/components/icons";
+import { PlusIcon } from "@/components/icons";
 import type { ProductStatus } from "@/domain/availability";
 import { formatFcfa } from "@/domain/money";
-import { whatsappLink } from "@/domain/phone";
-import { checkedLabel, needsRecheck, STATUS_OPTIONS, supplierListMessage } from "@/domain/products";
+import { needsRecheck, STATUS_OPTIONS } from "@/domain/products";
 import { requireAdmin } from "@/infra/auth";
 import { countPendingAlerts, listAdminProducts, type AdminProductRow } from "@/infra/adminProducts";
 import { productImageUrl } from "@/infra/catalogue";
-import { confirmSupplier } from "./actions";
-import { StatusSubmit } from "./StatusSubmit";
+import { SupplierSelect } from "./SupplierSelect";
+import { SupplierActions } from "../fournisseurs/SupplierActions";
+import { AdminProductsSkeleton } from "@/components/skeletons";
 
 const FILTERS = [
   { key: "tous", label: "Tous" },
@@ -30,7 +30,7 @@ const STATUS_STYLE: Record<ProductStatus, { text: string; dot: string }> = {
 
 export default function ProductsPage(props: PageProps<"/admin/produits">) {
   return (
-    <Suspense fallback={<p className="text-muted">Chargement des produits…</p>}>
+    <Suspense fallback={<AdminProductsSkeleton />}>
       <ProductsBoard {...props} />
     </Suspense>
   );
@@ -54,15 +54,25 @@ async function ProductsBoard({ searchParams }: PageProps<"/admin/produits">) {
     epuises: (p) => p.status === "sold_out",
   };
   const staleCount = products.filter(stale).length;
-  const visible = products.filter(tests[filter]);
 
-  const groups = new Map<string, { id: string | null; name: string; whatsapp: string | null; items: AdminProductRow[] }>();
-  for (const p of visible) {
-    const key = p.supplierId ?? "none";
-    const group = groups.get(key) ?? { id: p.supplierId, name: p.supplierName ?? "Sans fournisseur", whatsapp: p.supplierWhatsapp, items: [] };
-    group.items.push(p);
-    groups.set(key, group);
-  }
+  // Fournisseurs présents dans le catalogue (pour le filtre), dans l'ordre alphabétique.
+  const suppliers = [...new Map(products.filter((p) => p.supplierId).map((p) => [p.supplierId!, p.supplierName ?? ""])).entries()].sort((a, b) =>
+    a[1].localeCompare(b[1], "fr"),
+  );
+  const supplierId = suppliers.find(([id]) => id === query.fournisseur)?.[0] ?? null;
+  const visible = products.filter((p) => tests[filter](p) && (!supplierId || p.supplierId === supplierId));
+  const supplierItems = supplierId ? products.filter((p) => p.supplierId === supplierId) : [];
+  const supplier = supplierId ? { id: supplierId, name: suppliers.find(([id]) => id === supplierId)![1], whatsapp: supplierItems[0]?.supplierWhatsapp ?? null } : null;
+
+  const href = (next: { filtre?: string; fournisseur?: string | null }) => {
+    const params = new URLSearchParams();
+    const f = next.filtre ?? (filter === "tous" ? undefined : filter);
+    const s = next.fournisseur === undefined ? supplierId : next.fournisseur;
+    if (f && f !== "tous") params.set("filtre", f);
+    if (s) params.set("fournisseur", s);
+    const qs = params.toString();
+    return qs ? `/admin/produits?${qs}` : "/admin/produits";
+  };
 
   return (
     <>
@@ -83,7 +93,7 @@ async function ProductsBoard({ searchParams }: PageProps<"/admin/produits">) {
             Sur le site, {staleCount > 1 ? "ils s'affichent" : "il s'affiche"} « Sur commande » jusqu&apos;à votre prochaine vérification.
           </p>
           <Link
-            href="/admin/produits?filtre=a-reverifier"
+            href={href({ filtre: "a-reverifier" })}
             className="flex h-11 shrink-0 items-center justify-center rounded-lg bg-ink px-4 font-semibold text-white"
           >
             Voir les produits à revérifier
@@ -94,11 +104,11 @@ async function ProductsBoard({ searchParams }: PageProps<"/admin/produits">) {
       <nav aria-label="Filtrer les produits" className="mt-4 flex gap-2 overflow-x-auto pb-1">
         {FILTERS.map((f) => {
           const active = f.key === filter;
-          const count = products.filter(tests[f.key]).length;
+          const count = products.filter((p) => tests[f.key](p) && (!supplierId || p.supplierId === supplierId)).length;
           return (
             <Link
               key={f.key}
-              href={f.key === "tous" ? "/admin/produits" : `/admin/produits?filtre=${f.key}`}
+              href={href({ filtre: f.key })}
               aria-current={active ? "page" : undefined}
               className={`flex h-11 shrink-0 items-center rounded-full border px-4 text-sm font-semibold ${
                 active ? "border-ink bg-ink text-white" : "border-line bg-white"
@@ -110,41 +120,24 @@ async function ProductsBoard({ searchParams }: PageProps<"/admin/produits">) {
         })}
       </nav>
 
-      {groups.size === 0 && <p className="mt-8 text-center text-muted">Aucun produit ici.</p>}
+      {suppliers.length > 0 && (
+        <SupplierSelect
+          suppliers={suppliers.map(([id, name]) => ({ id, name }))}
+          selected={supplierId}
+          hrefs={Object.fromEntries([["", href({ fournisseur: null })], ...suppliers.map(([id]) => [id, href({ fournisseur: id })])])}
+        />
+      )}
 
-      {[...groups.values()].map((group) => (
-        <section key={group.id ?? "none"} aria-label={group.name} className="mt-8">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
-            <div>
-              <h2 className="text-lg font-semibold">{group.name}</h2>
-              <span className="text-xs text-muted">
-                {group.items.length} produit{group.items.length > 1 ? "s" : ""}
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {group.id && (
-                <form action={confirmSupplier}>
-                  <input type="hidden" name="supplierId" value={group.id} />
-                  <StatusSubmit className="h-11 rounded-lg border border-line bg-white px-3 text-sm font-semibold">
-                    Tout confirmé par le fournisseur
-                  </StatusSubmit>
-                </form>
-              )}
-              {group.whatsapp && (
-                <a
-                  href={whatsappLink(group.whatsapp, supplierListMessage(group.items))}
-                  aria-label={`Envoyer la liste à ${group.name} sur WhatsApp`}
-                  className="flex h-11 items-center gap-1.5 rounded-lg border-[1.5px] border-whatsapp px-3 text-sm font-semibold text-whatsapp"
-                >
-                  <WhatsAppIcon className="size-5" />
-                  Envoyer la liste
-                </a>
-              )}
-            </div>
-          </div>
+      {supplier && (
+        <div className="mt-4">
+          <SupplierActions supplier={supplier} items={supplierItems} />
+        </div>
+      )}
 
-          <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:grid-cols-5">
-            {group.items.map((p) => {
+      {visible.length === 0 && <p className="mt-8 text-center text-muted">Aucun produit ici.</p>}
+
+      <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:grid-cols-5">
+            {visible.map((p) => {
               const isStale = stale(p);
               const style = STATUS_STYLE[p.status];
               const label = STATUS_OPTIONS.find((o) => o.value === p.status)?.label;
@@ -180,16 +173,14 @@ async function ProductsBoard({ searchParams }: PageProps<"/admin/produits">) {
                       {label}
                     </span>
                     <span className={`text-xs ${isStale ? "font-semibold text-amber" : "text-muted"}`}>
-                      {checkedLabel(p.lastCheckedAt ? new Date(p.lastCheckedAt) : null, now)}
-                      {isStale && " · affiché « Sur commande »"}
+                      {p.supplierName ?? "Sans fournisseur"}
+                      {isStale && " · à revérifier"}
                     </span>
                   </Link>
                 </li>
               );
             })}
           </ul>
-        </section>
-      ))}
 
       <p className="mt-10 text-center text-xs text-muted">
         La disponibilité de chaque produit se règle dans sa fiche : cliquez sur un produit.

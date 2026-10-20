@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { ClearCart } from "@/components/cart/ClearCart";
 import { CheckCircleIcon } from "@/components/icons";
 import { getOrderSummary } from "@/infra/orders";
+import { OrderPageSkeleton } from "@/components/skeletons";
 
 export const metadata: Metadata = { title: "Commande reçue · Black House", robots: { index: false } };
 
@@ -19,7 +20,7 @@ const NEXT_STEPS = [
 export default function ThankYouPage(props: PageProps<"/merci/[token]">) {
   return (
     <main className="mx-auto w-full max-w-xl px-4 pb-16 pt-10">
-      <Suspense fallback={<p className="text-muted">Chargement…</p>}>
+      <Suspense fallback={<OrderPageSkeleton />}>
         <ThankYou {...props} />
       </Suspense>
     </main>

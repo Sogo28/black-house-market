@@ -11,6 +11,7 @@ import { formatFcfa } from "@/domain/money";
 import { MAX_QUANTITY } from "@/domain/order";
 import { whatsappLink } from "@/domain/phone";
 import { cart, useCart } from "./cart/cartStore";
+import { cartDrawer } from "./cart/drawerStore";
 import { BagIcon, MinusIcon, PlusIcon, WhatsAppIcon } from "./icons";
 import { RestockForm } from "./RestockForm";
 
@@ -62,7 +63,10 @@ export function OrderBox({ slug, productName, price, status, shopWhatsapp, resto
       </div>
       <button
         type="button"
-        onClick={() => cart.add(slug, quantity)}
+        onClick={() => {
+          cart.add(slug, quantity);
+          cartDrawer.open();
+        }}
         className="flex h-13 items-center justify-center gap-2 rounded-lg bg-ink font-semibold text-white"
       >
         <BagIcon className="size-5" />

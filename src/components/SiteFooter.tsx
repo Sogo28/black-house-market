@@ -27,6 +27,19 @@ export async function SiteFooter() {
           </nav>
         )}
 
+        <nav aria-label="Informations" className="flex min-w-36 flex-1 flex-col">
+          <h2 className="pb-2 text-xs font-semibold uppercase tracking-widest text-gold">Informations</h2>
+          <Link href="/livraison" className="py-2 text-sm hover:text-gold">
+            Livraison
+          </Link>
+          <Link href="/echanges" className="py-2 text-sm hover:text-gold">
+            Échanges et retours
+          </Link>
+          <Link href="/conditions" className="py-2 text-sm hover:text-gold">
+            Conditions de vente
+          </Link>
+        </nav>
+
         <div className="flex min-w-52 flex-1 flex-col gap-3 text-sm">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-gold">Contact</h2>
           {SHOP_WHATSAPP && (

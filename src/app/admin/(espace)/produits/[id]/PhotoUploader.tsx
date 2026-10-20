@@ -1,30 +1,11 @@
 "use client";
 
-// Envoi de photos depuis le téléphone. Les photos d'appareil font plusieurs Mo : on les
-// réduit ici (1 600 px, JPEG) avant l'envoi. C'est aussi ce qui garde le site rapide en 4G.
+// Envoi de photos depuis le téléphone (réduites avant l'envoi : voir shrinkImage).
 
 import { useRef, useState, useTransition } from "react";
 import { MAX_IMAGES } from "@/domain/products";
+import { shrinkImage } from "@/components/admin/shrinkImage";
 import { uploadImage } from "../actions";
-
-const MAX_SIDE = 1600;
-
-async function shrink(file: File): Promise<Blob> {
-  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
-  const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bitmap.width * scale);
-  canvas.height = Math.round(bitmap.height * scale);
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("canvas");
-  context.fillStyle = "#fff"; // les PNG transparents deviennent des JPEG sur fond blanc
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
-  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.82));
-  if (!blob) throw new Error("canvas");
-  return blob;
-}
 
 export function PhotoUploader({ productId, remaining }: { productId: string; remaining: number }) {
   const input = useRef<HTMLInputElement>(null);
@@ -45,7 +26,7 @@ export function PhotoUploader({ productId, remaining }: { productId: string; rem
         try {
           const body = new FormData();
           body.set("productId", productId);
-          body.set("photo", new File([await shrink(file)], "photo.jpg", { type: "image/jpeg" }));
+          body.set("photo", new File([await shrinkImage(file)], "photo.jpg", { type: "image/jpeg" }));
           const result = await uploadImage(body);
           if (result.error) {
             failures++;

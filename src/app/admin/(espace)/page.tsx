@@ -9,6 +9,7 @@ import type { OrderStatus } from "@/domain/tracking";
 import { requireAdmin } from "@/infra/auth";
 import { countOrdersByStatus, listOrders, type AdminOrderRow } from "@/infra/backoffice";
 import { productImageUrl } from "@/infra/catalogue";
+import { AdminOrdersSkeleton } from "@/components/skeletons";
 
 const MAX_THUMBS = 3;
 
@@ -32,7 +33,7 @@ const EMPTY: Record<string, string> = {
 
 export default function OrdersPage(props: PageProps<"/admin">) {
   return (
-    <Suspense fallback={<p className="text-muted">Chargement des commandes…</p>}>
+    <Suspense fallback={<AdminOrdersSkeleton />}>
       <OrdersBoard {...props} />
     </Suspense>
   );

@@ -2,11 +2,12 @@ import { Suspense } from "react";
 import { ProductGrid } from "@/components/product";
 import { matchesSearch, sortProducts } from "@/domain/catalogue";
 import { getCatalogue } from "@/infra/catalogue";
+import { ListingPageSkeleton } from "@/components/skeletons";
 
 export default function SearchPage(props: PageProps<"/recherche">) {
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 md:px-8">
-      <Suspense fallback={<p className="py-10 text-muted">Recherche…</p>}>
+      <Suspense fallback={<ListingPageSkeleton />}>
         <SearchResults {...props} />
       </Suspense>
     </main>

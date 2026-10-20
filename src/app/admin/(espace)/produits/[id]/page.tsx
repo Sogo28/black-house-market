@@ -13,12 +13,13 @@ import { changeStatus, deleteImage, makeMainImageAction, notifyAlertsDone } from
 import { ProductForm } from "../ProductForm";
 import { StatusSubmit } from "../StatusSubmit";
 import { PhotoUploader } from "./PhotoUploader";
+import { AdminFormSkeleton } from "@/components/skeletons";
 
 const STATUS_COLOR = { available: "bg-whatsapp border-whatsapp", on_order: "bg-amber border-amber", sold_out: "bg-muted border-muted" };
 
 export default function EditProductPage(props: PageProps<"/admin/produits/[id]">) {
   return (
-    <Suspense fallback={<p className="text-muted">Chargement…</p>}>
+    <Suspense fallback={<AdminFormSkeleton twoColumns />}>
       <EditProduct {...props} />
     </Suspense>
   );

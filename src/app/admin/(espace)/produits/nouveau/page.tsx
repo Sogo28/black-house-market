@@ -5,10 +5,11 @@ import { ChevronLeftIcon } from "@/components/icons";
 import { requireAdmin } from "@/infra/auth";
 import { listCategoryOptions, listSupplierOptions } from "@/infra/adminProducts";
 import { ProductForm } from "../ProductForm";
+import { AdminFormSkeleton } from "@/components/skeletons";
 
 export default function NewProductPage() {
   return (
-    <Suspense fallback={<p className="text-muted">Chargement…</p>}>
+    <Suspense fallback={<AdminFormSkeleton />}>
       <NewProduct />
     </Suspense>
   );

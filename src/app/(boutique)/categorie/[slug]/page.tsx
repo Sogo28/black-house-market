@@ -4,13 +4,14 @@ import { ChevronRightIcon } from "@/components/icons";
 import { ProductGrid } from "@/components/product";
 import { parseSort, SORT_OPTIONS, sortProducts } from "@/domain/catalogue";
 import { getCatalogue, getCategories } from "@/infra/catalogue";
+import { ListingPageSkeleton } from "@/components/skeletons";
 
 // Les paramètres se lisent sous <Suspense> : une catégorie ajoutée après le build
 // est servie tout de suite avec le squelette, puis mise en cache.
 export default function CategoryPage(props: PageProps<"/categorie/[slug]">) {
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 md:px-8">
-      <Suspense fallback={<p className="py-10 text-muted">Chargement…</p>}>
+      <Suspense fallback={<ListingPageSkeleton />}>
         <CategoryContent {...props} />
       </Suspense>
     </main>

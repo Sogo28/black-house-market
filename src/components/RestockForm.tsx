@@ -34,7 +34,7 @@ export function RestockForm({ action }: RestockFormProps) {
           id="restock-phone"
           name="phone"
           type="tel"
-          inputMode="tel"
+          inputMode="numeric"
           autoComplete="tel-national"
           required
           placeholder="77 123 45 67"

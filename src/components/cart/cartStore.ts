@@ -60,6 +60,13 @@ export function useCart(): CartLine[] {
   return useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
 }
 
+const noopSubscribe = () => () => {};
+
+/** Faux côté serveur et avant l'hydratation, vrai ensuite : tant que c'est faux, le panier lu n'est pas encore le vrai (squelette à afficher). */
+export function useCartReady(): boolean {
+  return useSyncExternalStore(noopSubscribe, () => true, () => false);
+}
+
 export const cart = {
   add(slug: string, quantity: number) {
     const lines = getSnapshot();

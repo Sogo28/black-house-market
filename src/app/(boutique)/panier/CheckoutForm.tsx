@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useActionState } from "react";
-import { cart, useCart } from "@/components/cart/cartStore";
+import { cart, useCart, useCartReady } from "@/components/cart/cartStore";
+import { CartPageSkeleton } from "@/components/skeletons";
 import { CheckCircleIcon, ClockIcon, MinusIcon, PlusIcon } from "@/components/icons";
 import { AVAILABILITY_COPY, canBeOrdered, type ProductStatus } from "@/domain/availability";
 import { formatFcfa } from "@/domain/money";
@@ -28,6 +29,7 @@ const INITIAL_STATE: CheckoutState = { errors: {}, attempt: 0 };
 
 export function CheckoutForm({ products }: { products: CartProduct[] }) {
   const lines = useCart();
+  const ready = useCartReady();
   const [state, formAction, pending] = useActionState(placeOrder, INITIAL_STATE);
 
   const bySlug = new Map(products.map((p) => [p.slug, p]));
@@ -38,6 +40,9 @@ export function CheckoutForm({ products }: { products: CartProduct[] }) {
   const blocked = items.length - orderable.length; // retirés de la vente ou épuisés
   const count = orderable.reduce((sum, i) => sum + i.line.quantity, 0);
   const subtotal = orderable.reduce((sum, i) => sum + i.product.price * i.line.quantity, 0);
+
+  // Le panier vit dans le navigateur : avant l'hydratation il paraît vide, d'où le squelette (sinon « panier vide » clignote).
+  if (!ready) return <CartPageSkeleton />;
 
   if (items.length === 0) {
     return (
@@ -154,7 +159,7 @@ export function CheckoutForm({ products }: { products: CartProduct[] }) {
                 id="phone"
                 name="phone"
                 type="tel"
-                inputMode="tel"
+                inputMode="numeric"
                 autoComplete="tel-national"
                 required
                 defaultValue={values?.phone}
@@ -268,7 +273,13 @@ export function CheckoutForm({ products }: { products: CartProduct[] }) {
         >
           {pending ? "Envoi en cours…" : "Envoyer ma commande"}
         </button>
-        <p className="text-center text-sm text-muted">Aucun paiement n&apos;est demandé maintenant.</p>
+        <p className="text-center text-sm text-muted">
+          Aucun paiement n&apos;est demandé maintenant. En envoyant votre commande, vous acceptez nos{" "}
+          <Link href="/conditions" className="underline">
+            conditions de vente
+          </Link>
+          .
+        </p>
       </aside>
     </form>
   );

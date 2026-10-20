@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { CashIcon, ChevronRightIcon, TruckIcon } from "@/components/icons";
+import { CashIcon, ChevronRightIcon, ReturnIcon, TruckIcon } from "@/components/icons";
 import { OrderBox } from "@/components/OrderBox";
 import { AvailabilityBox, DiscountBadge, PriceTag, ProductGrid, ProductImage } from "@/components/product";
 import { sortProducts } from "@/domain/catalogue";
@@ -8,13 +8,14 @@ import { formatFcfa } from "@/domain/money";
 import { getCatalogue, getProduct } from "@/infra/catalogue";
 import { SHOP_WHATSAPP } from "@/site";
 import { requestRestockAlert } from "./actions";
+import { ProductPageSkeleton } from "@/components/skeletons";
 
 const RELATED_COUNT = 4;
 
 export default function ProductPage(props: PageProps<"/produit/[slug]">) {
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 md:px-8">
-      <Suspense fallback={<p className="py-10 text-muted">Chargement…</p>}>
+      <Suspense fallback={<ProductPageSkeleton />}>
         <ProductContent {...props} />
       </Suspense>
     </main>
@@ -109,6 +110,18 @@ async function ProductContent({ params }: PageProps<"/produit/[slug]">) {
               <span className="flex flex-col">
                 <strong className="font-semibold">Paiement à la réception</strong>
                 <span className="text-sm text-muted">Espèces, Wave ou Orange Money. Rien à payer en ligne.</span>
+              </span>
+            </li>
+            <li className="flex gap-3 py-3">
+              <ReturnIcon className="size-6 shrink-0" />
+              <span className="flex flex-col">
+                <strong className="font-semibold">Échange</strong>
+                <span className="text-sm text-muted">
+                  Article abîmé ou différent ? Écrivez-nous sous 24 h.{" "}
+                  <Link href="/echanges" className="underline">
+                    Voir les conditions
+                  </Link>
+                </span>
               </span>
             </li>
           </ul>

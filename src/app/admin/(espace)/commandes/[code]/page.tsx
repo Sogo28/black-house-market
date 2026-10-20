@@ -29,11 +29,12 @@ import {
   markShipped,
 } from "./actions";
 import { ConfirmForm, SubmitButton } from "./forms";
+import { AdminFormSkeleton } from "@/components/skeletons";
 
 
 export default function AdminOrderPage(props: PageProps<"/admin/commandes/[code]">) {
   return (
-    <Suspense fallback={<p className="text-muted">Chargement…</p>}>
+    <Suspense fallback={<AdminFormSkeleton twoColumns />}>
       <OrderDetail {...props} />
     </Suspense>
   );

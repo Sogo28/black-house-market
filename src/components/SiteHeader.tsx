@@ -1,20 +1,30 @@
 import Link from "next/link";
-import { getCategories } from "@/infra/catalogue";
+import { getCatalogue, getCategories, productImageUrl } from "@/infra/catalogue";
 import { SHOP_WHATSAPP } from "@/site";
 import { whatsappLink } from "@/domain/phone";
+import { Suspense } from "react";
+import { CartDrawer, type CartProduct } from "./cart/CartDrawer";
 import { CartLink } from "./cart/CartLink";
 import { SearchIcon, WhatsAppIcon } from "./icons";
 import { Logo } from "./Logo";
 
 export async function SiteHeader() {
-  const categories = await getCategories();
+  const [categories, catalogue] = await Promise.all([getCategories(), getCatalogue()]);
+  // Le tiroir du panier ne connaît que des slugs : on lui donne de quoi les afficher (le catalogue est petit et en cache).
+  const cartProducts: CartProduct[] = catalogue.map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    price: p.price,
+    status: p.status,
+    imageUrl: p.images[0] ? productImageUrl(p.images[0]) : null,
+  }));
 
   return (
     <>
       <p className="bg-gold px-4 py-2 text-center text-xs font-semibold tracking-wider text-ink">
         SOLDES DE FIN D&apos;ANNÉE · PAIEMENT À LA LIVRAISON
       </p>
-      <header className="bg-ink text-white">
+      <header className="sticky top-0 z-40 bg-ink text-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 md:px-8">
           <Link href="/" aria-label="Black House, accueil" className="mr-auto md:mr-0">
             <Logo width={210} />
@@ -43,7 +53,10 @@ export async function SiteHeader() {
               <span className="hidden sm:inline">Nous écrire</span>
             </a>
           )}
-          <CartLink />
+          <Suspense fallback={<span className="size-11" />}>
+            <CartLink />
+          </Suspense>
+          <CartDrawer products={cartProducts} />
         </div>
         {categories.length > 0 && (
           <nav aria-label="Catégories" className="border-t border-white/10">

@@ -18,6 +18,7 @@ import { getTrackedOrder } from "@/infra/orders";
 import { SHOP_WHATSAPP } from "@/site";
 import { chooseForOrder } from "./actions";
 import { ChoiceForm } from "./ChoiceForm";
+import { OrderPageSkeleton } from "@/components/skeletons";
 
 export const metadata: Metadata = { title: "Suivi de commande · Black House", robots: { index: false } };
 
@@ -32,7 +33,7 @@ const LINE_COLOR: Record<LineState, string> = {
 export default function TrackingPage(props: PageProps<"/suivi/[token]">) {
   return (
     <main className="mx-auto w-full max-w-xl px-4 pb-16 pt-6">
-      <Suspense fallback={<p className="py-10 text-muted">Chargement…</p>}>
+      <Suspense fallback={<OrderPageSkeleton />}>
         <Tracking {...props} />
       </Suspense>
     </main>
