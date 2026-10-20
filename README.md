@@ -53,6 +53,16 @@ minute à les afficher (cache du catalogue) ; enregistrer un produit dans le bac
 
 `/admin`. En local, le seed crée un compte de test : `admin@blackhouse.test` / `blackhouse-local`.
 
+| Page | Rôle |
+|---|---|
+| `/admin` | Commandes : à traiter, attente client, en livraison, terminées |
+| `/admin/produits` | Grille des produits, filtres de statut et de fournisseur, fiche (disponibilité, photos, alertes de retour) |
+| `/admin/categories` | Catégories du site : nom, texte d'accueil, ordre, image |
+| `/admin/fournisseurs` | Fournisseurs (jamais visibles des clients) : WhatsApp, notes, produits rattachés |
+
+Chaque liste est une grille de cartes ; un clic ouvre la page de détail, et « Ajouter » ouvre une
+page de création. Sur mobile, les pages s'ouvrent depuis un menu hamburger.
+
 ## Créer le compte de Babacar
 
 Les inscriptions sont fermées : le compte du back-office se crée à la main.
@@ -64,6 +74,13 @@ Les inscriptions sont fermées : le compte du back-office se crée à la main.
    insert into public.admins (user_id)
    select id from auth.users where email = 'adresse@exemple.com';
    ```
+
+## Pages d'information
+
+`/livraison`, `/echanges`, `/conditions` : les textes sont des **propositions** qui décrivent le
+fonctionnement réel du site (commande sur demande, confirmation WhatsApp, paiement à la livraison).
+Délais, frais, conditions d'échange et informations légales sont à **valider avec Babacar** avant
+la mise en ligne (un commentaire en tête de chaque fichier le rappelle).
 
 ## Scripts
 
@@ -107,6 +124,9 @@ Photos : seau public `product-images` (lecture par URL, dépôt réservé aux ad
 5. ✅ Back-office des commandes : connexion, vérification, remplacements, messages WhatsApp (`/admin`)
 6. ✅ Back-office des produits : stock, revérification, fiches, photos, alertes de retour (`/admin/produits`)
 7. ✅ Mise en ligne préparée : Dockerfile, sauvegarde, guide [docs/deploiement.md](docs/deploiement.md) (reste à dérouler : VPS, Coolify, Cloudflare, tests sur téléphones, saisie du catalogue)
+8. ✅ Avant la mise en ligne : écrans Catégories et Fournisseurs, pages d'information, menu mobile et
+   barre fixe, panier latéral, squelettes de chargement, tests sur iPhone (simulateur)
+   (reste : tests sur Samsung, textes validés par Babacar)
 
 ## Mise en ligne
 

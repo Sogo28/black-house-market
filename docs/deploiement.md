@@ -21,17 +21,20 @@ Client ──► Cloudflare ──► VPS Contabo ──► Coolify (Traefik) �
 ## 1. Supabase en ligne
 
 1. Envoyer le schéma : `npx supabase db push` (à refaire après chaque nouvelle migration, **avant** de
-   déployer le code qui l'utilise).
+   déployer le code qui l'utilise). Il y a 5 migrations à ce jour, la dernière
+   (`20261020100000_category_images.sql`) ajoute l'image des catégories : sans elle, `/admin/categories`
+   et l'accueil échouent.
 2. Tableau de bord > **Authentication** > *Sign In / Providers* : désactiver « Allow new users to
    sign up » (le réglage de `config.toml` ne vaut que pour le local).
 3. Tableau de bord > **Authentication** > *URL Configuration* : *Site URL* = l'adresse publique du site.
 4. **Studio > SQL Editor** : jouer [`supabase/production-setup.sql`](../supabase/production-setup.sql)
-   (catégories, puis fournisseurs et compte de Babacar en suivant les commentaires du fichier).
+   (catégories, puis compte de Babacar en suivant les commentaires du fichier). Les fournisseurs et
+   les catégories se gèrent ensuite depuis le back-office (`/admin/fournisseurs`, `/admin/categories`).
    Le seed de test (`seed.sql`) ne doit **jamais** être joué en ligne.
 5. Noter, dans **Project Settings > API Keys**, l'URL du projet, la clé *Publishable* et la clé *Secret*.
-6. Images des catégories : Studio > Storage > `product-images`, déposer un fichier dans `categories/`,
-   puis renseigner la colonne `image` de la catégorie (ex. `categories/beaute.jpg`). Les photos des
-   produits se déposent depuis le back-office. Le script `db:seed-images` est réservé au local.
+6. Images : celles des catégories et des produits se déposent depuis le back-office
+   (`/admin/categories/…` et la fiche d'un produit), plus besoin de passer par Studio. Le script
+   `db:seed-images` est réservé au local.
 
 ## 2. Le serveur (VPS Contabo)
 
@@ -145,11 +148,14 @@ Cette procédure a été testée sur la base locale : toutes les lignes sont ret
 ## 7. Check-list après la première mise en ligne
 
 - [ ] `https://blackhouse.sn/api/health` répond `{"status":"ok"}` ; `http://` redirige vers `https://`.
-- [ ] Les 4 catégories s'affichent, la barre de navigation aussi.
+- [ ] Les 4 catégories s'affichent, la barre de navigation aussi (et leurs images, ajoutées depuis `/admin/categories`).
 - [ ] Passer une **vraie commande de test** avec son propre numéro, jusqu'à la confirmation, puis la
       traiter dans `/admin` (vérification, frais, message WhatsApp reçu, page de suivi). L'annuler ensuite.
 - [ ] Se connecter à `/admin` avec le compte de Babacar ; une inscription publique est refusée.
-- [ ] Ajouter un produit avec photos **depuis un vrai téléphone** (Android et iPhone).
+- [ ] Ajouter un produit avec photos **depuis un vrai téléphone** (Android et iPhone) : appareil photo, galerie, photo en HEIC (iPhone), orientation correcte.
+- [ ] Back-office sur téléphone : le menu hamburger liste Commandes, Produits, Catégories, Fournisseurs ; la barre du haut reste fixe ; créer un fournisseur et une catégorie.
+- [ ] Panier latéral : « Ajouter au panier » l'ouvre, on modifie les quantités, « Commander » mène à `/panier` ; la touche Échap le ferme (ordinateur).
+- [ ] Les pages `/livraison`, `/echanges` et `/conditions` ont été **relues et validées par Babacar** (délais, frais, échanges) et les informations légales de la boutique sont renseignées dans les conditions.
 - [ ] Le lien WhatsApp du bouton « Commander » ouvre la bonne conversation, avec le bon numéro.
 - [ ] `https://blackhouse.sn/robots.txt` interdit `/admin`, `/suivi/`, `/merci/`, `/panier`.
 - [ ] Tester le site en 4G, sur un téléphone d'entrée de gamme.
@@ -158,8 +164,9 @@ Cette procédure a été testée sur la base locale : toutes les lignes sont ret
 
 ## 8. Limites connues
 
-- **Pas d'écran d'administration** pour les fournisseurs ni les catégories (nom, image, ordre) : on
-  passe par Studio. À prévoir si Babacar doit les changer lui-même.
+- **Textes des pages d'information** : propositions à valider (délais, frais, échanges, mentions légales).
+- **Panier latéral** : l'en-tête embarque le catalogue (nom, prix, statut, une image) pour l'afficher.
+  Léger pour quelques dizaines de produits ; à charger à l'ouverture si le catalogue grossit beaucoup.
 - **Supabase gratuit** : 500 Mo de base, 1 Go de photos, pas de restauration à un instant donné. Les
   photos réduites (~250 Ko) laissent de la marge pour plusieurs milliers de produits.
 - **Pas de limitation de débit dans l'application** : elle repose sur Cloudflare (étape 4).
