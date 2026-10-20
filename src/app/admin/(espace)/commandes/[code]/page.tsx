@@ -17,6 +17,7 @@ import { PAYMENT_METHODS } from "@/domain/order";
 import { formatSenegalMobile, whatsappLink } from "@/domain/phone";
 import { LINE_LABELS, trackedLine } from "@/domain/tracking";
 import { requireAdmin } from "@/infra/auth";
+import { SITE_URL } from "@/site";
 import { getAdminOrder, replacementCandidates, type AdminOrder } from "@/infra/backoffice";
 import {
   askCustomerChoice,
@@ -29,7 +30,6 @@ import {
 } from "./actions";
 import { ConfirmForm, SubmitButton } from "./forms";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export default function AdminOrderPage(props: PageProps<"/admin/commandes/[code]">) {
   return (

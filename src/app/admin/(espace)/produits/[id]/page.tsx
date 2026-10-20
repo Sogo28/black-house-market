@@ -6,6 +6,7 @@ import { ChevronLeftIcon, WhatsAppIcon } from "@/components/icons";
 import { backInStockNotice, checkedLabel, MAX_IMAGES, needsRecheck, STATUS_OPTIONS } from "@/domain/products";
 import { formatSenegalMobile, whatsappLink } from "@/domain/phone";
 import { requireAdmin } from "@/infra/auth";
+import { SITE_URL } from "@/site";
 import { getAdminProduct, listCategoryOptions, listPendingAlerts, listSupplierOptions } from "@/infra/adminProducts";
 import { productImageUrl } from "@/infra/catalogue";
 import { changeStatus, deleteImage, makeMainImageAction, notifyAlertsDone } from "../actions";
@@ -14,7 +15,6 @@ import { StatusSubmit } from "../StatusSubmit";
 import { PhotoUploader } from "./PhotoUploader";
 
 const STATUS_COLOR = { available: "bg-whatsapp border-whatsapp", on_order: "bg-amber border-amber", sold_out: "bg-muted border-muted" };
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export default function EditProductPage(props: PageProps<"/admin/produits/[id]">) {
   return (

@@ -4,3 +4,6 @@
 export const SHOP_WHATSAPP: string | null = process.env.NEXT_PUBLIC_SHOP_WHATSAPP || null;
 
 export const SHOP_INSTAGRAM = "luxuryboutique_blackhouse";
+
+/** Adresse publique du site, sans « / » final (liens de suivi, plan du site, partage). */
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/+$/, "");

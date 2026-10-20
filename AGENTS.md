@@ -54,6 +54,8 @@ canvas « Black House – Maquette e-commerce », https://claude.ai/artifact/YHd
 
 - `npm run dev` — site en local (http://localhost:3000).
 - `npm test`, `npm run lint`, `npm run typecheck`, `npm run build` — à faire passer avant de livrer.
+- Déploiement : `Dockerfile` + Coolify, voir `docs/deploiement.md`. `scripts/backup-db.sh` sauvegarde les données
+  (pas le schéma : il vit dans `supabase/migrations`). `GET /api/health` ne touche pas à la base, exprès.
 - `npm run db:start` / `db:reset` / `db:types` — Supabase local (Docker), réinitialisation avec
   les données de test, régénération des types.
 

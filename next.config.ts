@@ -17,6 +17,21 @@ const nextConfig: NextConfig = {
     // Les photos sont réduites dans le navigateur (~300 Ko) ; on garde de la marge.
     serverActions: { bodySizeLimit: "3mb" },
   },
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+          // HTTPS uniquement (le navigateur refuse ensuite le http:// pendant un an).
+          { key: "Strict-Transport-Security", value: "max-age=31536000" },
+        ],
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.css": {

@@ -106,12 +106,12 @@ Photos : seau public `product-images` (lecture par URL, dépôt réservé aux ad
 4. ✅ Page de suivi et choix du client si un article manque (test : `/suivi/acacacacacacacacacacacacacacacacacac` après `npm run db:reset`)
 5. ✅ Back-office des commandes : connexion, vérification, remplacements, messages WhatsApp (`/admin`)
 6. ✅ Back-office des produits : stock, revérification, fiches, photos, alertes de retour (`/admin/produits`)
-7. Mise en ligne, tests sur téléphones, saisie du catalogue
+7. ✅ Mise en ligne préparée : Dockerfile, sauvegarde, guide [docs/deploiement.md](docs/deploiement.md) (reste à dérouler : VPS, Coolify, Cloudflare, tests sur téléphones, saisie du catalogue)
 
-## Mise en ligne (prévue à l'étape 7)
+## Mise en ligne
 
-- **Supabase** en ligne, région Francfort : `npx supabase link`, puis `npx supabase db push`.
-  L'offre gratuite ne sauvegarde pas la base : prévoir un `pg_dump` chaque nuit depuis le VPS.
-- **VPS Contabo** avec **Coolify** : déploiement à chaque `git push`, HTTPS automatique. Le site
-  tourne depuis `.next/standalone` (image Docker).
-- **Cloudflare** devant le VPS : DNS, cache des photos et des fichiers statiques, protection.
+Tout est décrit dans [docs/deploiement.md](docs/deploiement.md) : Supabase en ligne, VPS Contabo avec
+Coolify, Cloudflare, sauvegardes nocturnes et leur restauration, check-list finale.
+
+Fichiers utiles : `Dockerfile` (image de production), `scripts/backup-db.sh` (sauvegarde),
+`supabase/production-setup.sql` (installation initiale de la base en ligne), `GET /api/health`.

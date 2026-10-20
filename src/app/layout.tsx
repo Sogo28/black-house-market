@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Alex_Brush, Jost, Questrial } from "next/font/google";
+import { SITE_URL } from "@/site";
 import "./globals.css";
 
 // Texte du site.
@@ -23,6 +24,7 @@ const questrial = Questrial({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Black House · Private room",
   description: "Les grandes marques à prix cassés, livrées chez vous à Dakar. Paiement à la réception.",
 };

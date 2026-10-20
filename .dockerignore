@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.gitignore
+.env*
+!.env.example
+Dockerfile
+.dockerignore
+README.md
+docs
+supabase/.temp
+supabase/.branches
+*.tsbuildinfo
+npm-debug.log*
+.DS_Store
