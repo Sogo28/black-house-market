@@ -68,13 +68,13 @@ export function AvailabilityBox({ status }: { status: ProductStatus }) {
 export function ProductCard({ product }: { product: CatalogueProduct }) {
   const href = `/produit/${product.slug}`;
   return (
-    <article className="flex flex-col gap-2">
+    <article className="flex w-full flex-col gap-2">
       <Link href={href} className="relative block aspect-square overflow-hidden rounded-2xl bg-sand" tabIndex={-1}>
         <ProductImage product={product} sizes="(min-width: 1024px) 270px, (min-width: 640px) 33vw, 50vw" />
         <DiscountBadge price={product.price} oldPrice={product.oldPrice} />
       </Link>
       <span className="text-xs font-semibold uppercase tracking-wider text-muted">{product.categoryName}</span>
-      <Link href={href} className="min-h-14 font-medium leading-snug hover:underline">
+      <Link href={href} className="flex-1 font-medium leading-snug hover:underline">
         {product.name}
       </Link>
       <PriceTag price={product.price} oldPrice={product.oldPrice} />
@@ -88,7 +88,7 @@ export function ProductGrid({ products }: { products: CatalogueProduct[] }) {
   return (
     <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
       {products.map((product) => (
-        <li key={product.id}>
+        <li key={product.id} className="flex">
           <ProductCard product={product} />
         </li>
       ))}
